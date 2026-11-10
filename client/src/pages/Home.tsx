@@ -44,7 +44,7 @@ function Shell({ children, pageIndex, title }: { children: React.ReactNode; page
       </main>
       <footer className="jump-footer">
         <button className="circle-btn" onClick={() => go(-1)} aria-label="Previous page"><ArrowLeft size={18} /></button>
-        <div className="jump-label">JUMP TO NEXT <span>↘</span></div>
+        <div className="jump-label">अगला सेक्शन <span>↘</span></div>
         <button className="circle-btn filled" onClick={() => go(1)} aria-label="Next page"><ArrowRight size={18} /></button>
       </footer>
     </div>

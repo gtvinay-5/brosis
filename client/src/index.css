@@ -34,3 +34,20 @@
   .ritual-board .tilak-tray{left:-4px;bottom:5px;}
   .ritual-board .interactive-thali-area:after{width:360px;height:235px;}
 }
+
+/* Thumb-held Aarti: the thali stays under the finger and never leaves the board */
+.thumb-aarti-board{overflow:hidden;}
+.thumb-aarti-board .interactive-thali{transition:transform .08s linear, box-shadow .25s ease;}
+.thumb-aarti-board .interactive-thali.being-held{cursor:grabbing;box-shadow:0 28px 42px rgba(122,62,41,.28),0 0 42px rgba(255,177,71,.4);}
+.tilak-tray-in-thali{position:absolute;z-index:8;right:28px;bottom:28px;width:82px;height:68px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#f5d9a5,#ca8c59);border:4px solid #e6ad6d;color:#8c474d;cursor:pointer;box-shadow:0 8px 14px rgba(123,68,46,.2);transform:rotate(-8deg);transition:.25s;}
+.tilak-tray-in-thali:hover,.tilak-tray-in-thali.ready{transform:rotate(-8deg) translateY(-7px) scale(1.06);box-shadow:0 13px 20px rgba(123,68,46,.3);}
+.tilak-tray-in-thali b{font:600 11px 'Playfair Display';white-space:nowrap;}
+.tilak-tray-in-thali small{font:8px 'DM Mono';}
+.tilak-tray-in-thali .tilak-dot{width:20px;height:11px;background:#c52d45;box-shadow:0 0 0 4px rgba(197,45,69,.18);}
+.avatar-smile.happy{width:36px;height:19px;border-bottom:4px solid #8f304b;box-shadow:0 4px 0 rgba(255,255,255,.22);}
+.thumb-aarti-board .forehead-action{z-index:10;}
+@media(max-width:800px){
+  .thumb-aarti-board .interactive-thali-area{width:430px;height:330px;}
+  .thumb-aarti-board .interactive-thali{margin:-150px 0 0 -150px;}
+  .tilak-tray-in-thali{right:30px;bottom:30px;}
+}

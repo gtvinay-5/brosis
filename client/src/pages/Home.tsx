@@ -41,46 +41,44 @@ function Welcome({ onNext }: { onNext: () => void }) { return <Shell pageIndex={
 
 function Mehfil({ onNext }: { onNext: () => void }) { return <Shell pageIndex={1} title="the people who make home feel like home"><section className="section-head"><div><p className="overline">Meri teen stars</p><h2>Har ek ke liye<br /><em>ek khaas dua.</em></h2></div><p className="section-intro">Aaj ki shaam in teen roshniyon ke naam — jinse meri duniya thodi aur sundar hai.</p></section><div className="sister-row">{sisters.map((s, i) => <article className="sister-card" key={s.name} style={{ "--accent": s.color } as React.CSSProperties}><div className="card-number">0{i + 1}</div><div className="portrait"><span>{s.name.split(" ")[0][0]}<sup>♥</sup></span></div><h3>{s.name}</h3><p>{s.note}</p><div className="card-foot"><span>meri dua</span><Heart size={15} fill="currentColor" /></div></article>)}</div><button className="text-btn" onClick={onNext}>Aarti ki roshni mein chalo <ArrowRight size={16} /></button></Shell>; }
 
-function BrotherAvatar({ tilakApplied = false, fed = false }: { tilakApplied?: boolean; fed?: boolean }) { return <div className="brother-wrap"><div className="brother-photo"><div className="avatar-hair" /><div className="avatar-face"><span className="avatar-eye left" /><span className="avatar-eye right" /><span className="avatar-nose" /><span className="avatar-smile" />{tilakApplied && <span className="forehead-tilak" />}</div><div className="avatar-body"><span className="kurta-dot" /></div><div className={`mouth-target ${fed ? "fed" : ""}`}>{fed ? "♥" : ""}</div></div><span className="photo-caption">tumhara bhai<br /><b>always on duty</b></span></div>; }
+function BrotherAvatar({ tilakApplied = false, fed = false, smiling = false }: { tilakApplied?: boolean; fed?: boolean; smiling?: boolean }) { return <div className="brother-wrap"><div className="brother-photo"><div className="avatar-hair" /><div className="avatar-face"><span className="avatar-eye left" /><span className="avatar-eye right" /><span className="avatar-nose" /><span className={`avatar-smile ${smiling ? "happy" : ""}`} />{tilakApplied && <span className="forehead-tilak" />}</div><div className="avatar-body"><span className="kurta-dot" /></div><div className={`mouth-target ${fed ? "fed" : ""}`}>{fed ? "♥" : ""}</div></div><span className="photo-caption">tumhara bhai<br /><b>always on duty</b></span></div>; }
 
 function Aarti({ onNext }: { onNext: () => void }) {
-  const [orbitAngle, setOrbitAngle] = useState(-Math.PI / 2);
   const [dragging, setDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [startAngle, setStartAngle] = useState(-Math.PI / 2);
+  const [dragPosition, setDragPosition] = useState({ x: 0, y: -92 });
   const [aartiDone, setAartiDone] = useState(false);
   const [tilakReady, setTilakReady] = useState(false);
   const [tilakApplied, setTilakApplied] = useState(false);
+  const areaRef = useRef<HTMLDivElement>(null);
 
-  const beginRotate = (event: React.PointerEvent) => {
+  const moveThali = (event: React.PointerEvent) => {
+    if (!dragging || !areaRef.current) return;
+    const area = areaRef.current.getBoundingClientRect();
+    const maxX = Math.max(0, area.width / 2 - 158);
+    const maxY = Math.max(0, area.height / 2 - 158);
+    const x = Math.max(-maxX, Math.min(maxX, event.clientX - area.left - area.width / 2));
+    const y = Math.max(-maxY, Math.min(maxY, event.clientY - area.top - area.height / 2));
+    setDragPosition({ x, y });
+  };
+  const beginDrag = (event: React.PointerEvent) => {
     setDragging(true);
-    setStartX(event.clientX);
-    setStartAngle(orbitAngle);
     event.currentTarget.setPointerCapture?.(event.pointerId);
+    moveThali(event);
   };
-  const rotate = (event: React.PointerEvent) => {
-    if (!dragging) return;
-    setOrbitAngle(startAngle + (event.clientX - startX) * 0.014);
-  };
-  const endRotate = () => {
+  const endDrag = () => {
     if (!dragging) return;
     setDragging(false);
-    if (!aartiDone) {
-      setAartiDone(true);
-      setTilakReady(true);
-      toast.success("Aarti ho gayi! Ab tika uthao aur bhai ke maathe par lagao.");
-    }
+    setAartiDone(true);
+    setTilakReady(true);
+    toast.success("Aarti ho gayi! Ab thali mein se laal tika uthao.");
   };
   const applyTilak = () => {
     if (!tilakReady || tilakApplied) return;
     setTilakApplied(true);
-    toast.success("Tilak lag gaya — ab mithai khilao!");
+    toast.success("Laal tika lag gaya — bhai bhi smile kar raha hai!");
   };
-  const orbitX = Math.cos(orbitAngle) * 178;
-  const orbitY = Math.sin(orbitAngle) * 112;
-  const thaliStyle = { transform: `translate(${orbitX}px, ${orbitY}px) rotate(${orbitAngle * 57.3 + 90}deg)` };
 
-  return <Shell pageIndex={2} title="haath se karo aarti, dil se lagao tika"><section className="interactive-head"><div><p className="overline">Ritual no. 01 · Hands-on</p><h2>Aarti bhi tum,<br /><em>tika bhi tum.</em></h2><p className="instruction-copy">Thali ko bhai ke chehre ke saamne gol-gol ghumao — bilkul asli Aarti ki tarah. Aarti complete hone ke baad tika uthao aur maathe par tap karo.</p></div><div className="step-badge"><span>{tilakApplied ? "03" : aartiDone ? "02" : "01"}</span><b>{tilakApplied ? "Tilak lag gaya" : aartiDone ? "Ab tika lagao" : "Aarti karo"}</b></div></section><div className="ritual-board"><div className="board-instruction"><Hand size={18} /><b>{!aartiDone ? "Thali ko bhai ke chehre ke saamne circle mein ghumao" : !tilakApplied ? "Pehle टीका uthao, phir bhai ke forehead par tap karo" : "Bahut badhiya! Ab mithai khilao"}</b><small>{!aartiDone ? "finger / mouse drag · circular Aarti" : !tilakApplied ? "2 taps complete the ritual" : "next step unlocked"}</small></div><BrotherAvatar tilakApplied={tilakApplied} /><div className="interactive-thali-area" onPointerMove={rotate} onPointerUp={endRotate} onPointerCancel={endRotate}><div className={`thali interactive-thali ${aartiDone ? "is-lit" : ""}`} style={thaliStyle} onPointerDown={beginRotate} role="button" aria-label="Drag thali in a circle around brother's face"><div className="thali-center"><div className="kumkum" /><div className="diya"><span /></div></div><div className="petal p1">✿</div><div className="petal p2">✦</div><div className="petal p3">✿</div><div className="petal p4">✦</div></div><div className={`tilak-tray ${tilakReady && !tilakApplied ? "ready" : ""}`} onClick={() => setTilakReady(true)} role="button" aria-label="Pick up tilak"><span className="tilak-dot" /> <b>टीका उठाओ</b><small>{tilakApplied ? "done" : "tap here"}</small></div><button className={`forehead-action ${tilakReady && !tilakApplied ? "ready" : ""}`} onClick={applyTilak} aria-label="Apply tilak to brother">{tilakApplied ? <Check size={17} /> : "माथे पर लगाओ"}</button></div></div><div className="ritual-progress"><span className={aartiDone ? "done" : ""}>01 <b>Aarti</b></span><i /><span className={tilakApplied ? "done" : ""}>02 <b>Tilak</b></span><i /><span>03 <b>Aashirwad</b></span></div>{tilakApplied && <button className="text-btn" onClick={onNext}>Mithai lekar aao <ArrowRight size={16} /></button>}</Shell>;
+  return <Shell pageIndex={2} title="haath se karo aarti, dil se lagao tika"><section className="interactive-head"><div><p className="overline">Ritual no. 01 · Thumb control</p><h2>Aarti bhi tum,<br /><em>tika bhi tum.</em></h2><p className="instruction-copy">Thali ko apne thumb se pakdo aur bhai ke chehre ke saamne jahan le jao, thali wahi chalegi. Aarti ke baad thali ke andar se laal tika pick karo aur forehead par tap karo.</p></div><div className="step-badge"><span>{tilakApplied ? "03" : aartiDone ? "02" : "01"}</span><b>{tilakApplied ? "Bhai smile kar raha hai" : aartiDone ? "Ab tika uthao" : "Aarti karo"}</b></div></section><div className="ritual-board thumb-aarti-board"><div className="board-instruction"><Hand size={18} /><b>{!aartiDone ? "Thumb se thali ko saamne gol-gol ghumao" : !tilakApplied ? "Thali ke andar laal टीका pick karo, phir forehead tap karo" : "Bahut badhiya! Bhai smile kar raha hai"}</b><small>{!aartiDone ? "thali follows your thumb" : !tilakApplied ? "pick red tika → apply" : "next step unlocked"}</small></div><BrotherAvatar tilakApplied={tilakApplied} smiling={tilakApplied} /><div className="interactive-thali-area" ref={areaRef} onPointerMove={moveThali} onPointerUp={endDrag} onPointerCancel={endDrag}><div className={`thali interactive-thali ${aartiDone ? "is-lit" : ""} ${dragging ? "being-held" : ""}`} style={{ transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)` }} onPointerDown={beginDrag} role="button" aria-label="Hold and move the aarti thali with your thumb"><div className="thali-center"><div className="kumkum" /><div className="diya"><span /></div></div><div className="petal p1">✿</div><div className="petal p2">✦</div><div className="petal p3">✿</div><div className="petal p4">✦</div><div className={`tilak-tray-in-thali ${tilakReady && !tilakApplied ? "ready" : ""}`} onPointerDown={(event) => event.stopPropagation()} onClick={() => setTilakReady(true)} role="button" aria-label="Pick up red tilak"><span className="tilak-dot" /><b>लाल टीका</b><small>{tilakApplied ? "लग गया" : "उठाओ"}</small></div></div><button className={`forehead-action ${tilakReady && !tilakApplied ? "ready" : ""}`} onClick={applyTilak} aria-label="Apply red tilak to brother">{tilakApplied ? <Check size={17} /> : "माथे पर लगाओ"}</button></div></div><div className="ritual-progress"><span className={aartiDone ? "done" : ""}>01 <b>Aarti</b></span><i /><span className={tilakApplied ? "done" : ""}>02 <b>Laal Tilak</b></span><i /><span className={tilakApplied ? "done" : ""}>03 <b>Smile</b></span></div>{tilakApplied && <button className="text-btn" onClick={onNext}>Mithai lekar aao <ArrowRight size={16} /></button>}</Shell>;
 }
 
 function Mithai({ onNext }: { onNext: () => void }) {

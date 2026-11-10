@@ -9,3 +9,8 @@
 - [x] Add heartfelt wishes and personalized messages for all three sisters.
 - [x] Add jumping-style animated page transitions and cinematic navigation cues.
 - [x] Add a final celebration page with closing wish and replay/navigation options.
+- [x] Make the Aarti thali rotate through finger/mouse drag, with step-by-step Aarti guidance.
+- [x] Add a cartoon brother visual, clickable tilak tray and forehead tilak application step.
+- [x] Make the mithai draggable to the brother's mouth so it disappears when fed.
+- [x] Make the gift arrive from the brother's hands, then unlock each sister's personalized reveal.
+- [x] Keep one large bottom navigation control for moving between celebration pages.

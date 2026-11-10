@@ -1,0 +1,9 @@
+{
+  "routes": [
+    {"path":"/","title":"Swagat"},
+    {"path":"/mehfil","title":"Teen Behne"},
+    {"path":"/aarti","title":"Aarti"},
+    {"path":"/mithai","title":"Mithai"},
+    {"path":"/tohfa","title":"Tohfa aur Aashirwad"}
+  ]
+}
